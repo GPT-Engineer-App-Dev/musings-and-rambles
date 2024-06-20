@@ -1,5 +1,5 @@
-import { Container, Text, VStack, Heading, Box, Image, Link, Button } from "@chakra-ui/react";
-import { FaTwitter, FaLinkedin, FaGithub } from "react-icons/fa";
+import { Container, Text, VStack, Heading, Box, Image, Link, Button, IconButton } from "@chakra-ui/react";
+import { FaTwitter, FaLinkedin, FaGithub, FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -10,6 +10,12 @@ const Index = () => {
     const storedPosts = JSON.parse(localStorage.getItem("posts")) || [];
     setPosts(storedPosts);
   }, []);
+
+  const handleDelete = (index) => {
+    const updatedPosts = posts.filter((_, i) => i !== index);
+    setPosts(updatedPosts);
+    localStorage.setItem("posts", JSON.stringify(updatedPosts));
+  };
 
   return (
     <Container centerContent maxW="container.md" py={8}>
@@ -35,7 +41,17 @@ const Index = () => {
         <Button as={RouterLink} to="/add-post" colorScheme="blue">Add New Post</Button>
         <VStack spacing={4} w="100%">
           {posts.map((post, index) => (
-            <Box key={index} p={4} borderWidth="1px" borderRadius="md" w="100%">
+            <Box key={index} p={4} borderWidth="1px" borderRadius="md" w="100%" position="relative">
+              <IconButton
+                icon={<FaTrash />}
+                colorScheme="red"
+                size="sm"
+                position="absolute"
+                top="4px"
+                right="4px"
+                onClick={() => handleDelete(index)}
+                aria-label="Delete post"
+              />
               <Heading as="h3" size="md">{post.title}</Heading>
               <Text mt={2}>{post.content}</Text>
             </Box>
